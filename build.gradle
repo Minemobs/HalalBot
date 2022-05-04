@@ -15,7 +15,7 @@ application {
     mainClassName = 'com.miclesworkshop.halalbot.Main'
     tasks.run.setWorkingDir(file(sourceSets.main.resources.srcDirs[0]))
     run {
-        args('--data=data', '--token=OTcxNTMxMjc2NzM1NjI3MzA0.YnL3Ag.-1yemo6-HJFTr0coSnniYp9F2eI')
+        args('--data=data', '--token=xx')
     }
 }
 
