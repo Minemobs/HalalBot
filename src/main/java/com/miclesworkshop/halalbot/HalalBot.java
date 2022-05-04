@@ -4,13 +4,13 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.miclesworkshop.halalbot.commands.*;
+import com.miclesworkshop.halalbot.object.Surahs;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
 import org.javacord.api.entity.DiscordEntity;
 import org.javacord.api.entity.channel.ChannelCategory;
 import org.javacord.api.entity.channel.RegularServerChannel;
-import org.javacord.api.entity.channel.ServerChannel;
 import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.message.Message;
 import org.javacord.api.entity.message.embed.EmbedBuilder;
@@ -21,11 +21,11 @@ import org.javacord.api.entity.permission.Role;
 import org.javacord.api.entity.server.Server;
 import org.javacord.api.entity.user.User;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -44,6 +44,7 @@ public class HalalBot {
     private Map<Long, TimedCounter> counters;
 
     private File serverDataFile;
+    private Surahs[] surahs;
 
     public HalalBot(File dataFolder, String token) {
         discordApi = new DiscordApiBuilder().setToken(token)
@@ -68,18 +69,25 @@ public class HalalBot {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-            log.info("  -> Read " + serverDataMap.size() + " servers.");
+            log.info(() -> "  -> Read " + serverDataMap.size() + " servers.");
+        }
+
+        try(BufferedReader reader = Files.newBufferedReader(Paths.get(dataFolder.getAbsolutePath(), "surahs.json"), StandardCharsets.UTF_8)) {
+            surahs = gson.fromJson(reader, Surahs[].class);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
         commandGroups = Arrays.asList(
                 new HelpCommand(this),
                 new ApprovalCommands(this),
                 new JailCommands(this),
-                new QuranCommands((this)));
+                new EnglishQuranCommands(this),
+                new FrenchQuranCommand(this));
 
         registerListeners();
 
-        discordApi.getServers().forEach(this::initServer);
+        //discordApi.getServers().forEach(this::initServer);
 
         printInvite();
     }
@@ -103,7 +111,7 @@ public class HalalBot {
     private void initServer(Server server) {
         log.info("Initializing " + server.getName());
 
-        log.info("  -> Own Roles: " + server.getRoles(discordApi.getYourself()).stream().map(Role::getName).collect(Collectors.joining(", ")));
+        log.info(() -> "  -> Own Roles: " + server.getRoles(discordApi.getYourself()).stream().map(Role::getName).collect(Collectors.joining(", ")));
 
         getOrCreateLimboChannel(server);
         getOrCreateJailChannel(server);
@@ -436,5 +444,9 @@ public class HalalBot {
         }
 
         channel.delete(reason);
+    }
+
+    public Surahs[] getSurahs() {
+        return surahs;
     }
 }

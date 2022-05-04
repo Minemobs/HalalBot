@@ -13,6 +13,11 @@
 .idea/**/dictionaries
 .idea/**/shelf
 
+bin/
+.classpath
+.project
+.settings/
+
 # Generated files
 .idea/**/contentModel.xml
 
@@ -227,3 +232,4 @@ gradle-app.setting
 
 server_data.json
 instance.lock
+/src/main/resources/data/

@@ -4,7 +4,6 @@ plugins {
     id 'application'
 }
 
-mainClassName = "com.miclesworkshop.halalbot.Main"
 
 group 'com.miclesworkshop'
 version '0.1-SNAPSHOT'
@@ -12,9 +11,23 @@ version '0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+application {
+    mainClassName = 'com.miclesworkshop.halalbot.Main'
+    tasks.run.setWorkingDir(file(sourceSets.main.resources.srcDirs[0]))
+    run {
+        args('--data=data', '--token=OTcxNTMxMjc2NzM1NjI3MzA0.YnL3Ag.-1yemo6-HJFTr0coSnniYp9F2eI')
+    }
+}
+
+compileJava.options.encoding = 'UTF-8'
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 jar {
     manifest {
-        attributes 'Main-Class': 'com.miclesworkshop.halalbot.Main'
+        attributes 'Main-Class': mainClassName
     }
 }
 
