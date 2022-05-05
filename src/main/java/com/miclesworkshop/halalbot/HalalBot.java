@@ -5,6 +5,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.miclesworkshop.halalbot.commands.*;
 import com.miclesworkshop.halalbot.object.Surahs;
+import com.miclesworkshop.halalbot.utils.ServerData;
+import com.miclesworkshop.halalbot.utils.TimedCounter;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.javacord.api.DiscordApi;
 import org.javacord.api.DiscordApiBuilder;
@@ -83,7 +85,8 @@ public class HalalBot {
                 new ApprovalCommands(this),
                 new JailCommands(this),
                 new EnglishQuranCommands(this),
-                new FrenchQuranCommand(this));
+                new FrenchQuranCommand(this),
+                new PrayerTimeCommand(this));
 
         registerListeners();
 
@@ -427,7 +430,7 @@ public class HalalBot {
     public void deleteChannel(ServerTextChannel channel, String reason) {
         try {
             String log = channel.getMessagesAsStream()
-                    .map(m -> "[" + m.getCreationTimestamp().atZone(ZoneId.systemDefault()).toString() + "] " +
+                    .map(m -> "[" + m.getCreationTimestamp().atZone(ZoneId.systemDefault()) + "] " +
                             m.getAuthor().getDisplayName() +
                             " (" + m.getAuthor().getDiscriminatedName() + ")" + ": " +
                             m.getReadableContent() +

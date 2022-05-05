@@ -1,7 +1,7 @@
 package com.miclesworkshop.halalbot.commands;
 
 import com.miclesworkshop.halalbot.HalalBot;
-import com.miclesworkshop.halalbot.ServerData;
+import com.miclesworkshop.halalbot.utils.ServerData;
 import org.javacord.api.entity.channel.ServerTextChannel;
 import org.javacord.api.entity.channel.TextChannel;
 import org.javacord.api.entity.message.Message;

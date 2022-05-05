@@ -1,17 +1,12 @@
 package com.miclesworkshop.halalbot;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
+import com.miclesworkshop.halalbot.utils.Config;
 import org.apache.commons.cli.*;
 
 import java.io.*;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 
 public class Main {
@@ -23,8 +18,8 @@ public class Main {
         if (configFile.exists()) {
             try (FileReader reader = new FileReader(configFile)) {
                 Config config = new Gson().fromJson(reader, Config.class);
-                token = config.token;
-                dataFolderPath = config.dataFolder;
+                token = config.getToken();
+                dataFolderPath = config.getDataFolder();
             }
         } else {
             Options options = new Options();
